@@ -172,7 +172,9 @@ public:
     void show_isbn(const string &content) {
         vector<int> index;
         isbn_list.find(content, index);
-        print(index);
+        if (!index.empty())
+            print(index);
+        else cout << "\n";
     }
 
     void show_name(const string &content) {
@@ -186,13 +188,17 @@ public:
     void show_author(const string &content) {
         vector<int> index;
         author_list.find(content, index);
-        print(index);
+        if (!index.empty())
+            print(index);
+        else cout << "\n";
     }
 
     void show_keyword(const string &content) {
         vector<int> index;
         keyword_list.find(content, index);
-        print(index);
+        if (!index.empty())
+            print(index);
+        else cout << "\n";
     }
 
     void show() {
