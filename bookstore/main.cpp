@@ -7,8 +7,6 @@ using namespace std;
 Express bookstore;
 
 int main() {
-    freopen("1.in", "r", stdin);
-    freopen("1.out", "w", stdout);
     string in;
     TokenScanner in_tok;
     bookstore.initialise();
@@ -23,7 +21,5 @@ int main() {
             cout << "Invalid\n";
         }
     }
-    fclose(stdin);
-    fclose(stdout);
     return 0;
 }
