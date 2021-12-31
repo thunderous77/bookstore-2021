@@ -84,6 +84,7 @@ public:
             user.Register(next, password, username);
         } else if (head == "passwd") {
             //passwd [User-ID] ([Old-Password])? [New-Password]
+            if (user.Privilege() < 1) throw Error();
             string nxt;
             if (tok.hasMoreToken()) nxt = tok.nextToken();
             if (tok.Num() == 3) {
@@ -93,11 +94,13 @@ public:
             } else throw Error();
         } else if (head == "useradd") {
             //useradd [User-ID] [Password] [Priority] [User-Name]
+            if (user.Privilege() < 3) throw Error();
             if (tok.Num() != 5) throw Error();
             string password = tok.nextToken(), priority = tok.nextToken(), username = tok.nextToken();
             user.useradd(next, password, username, priority);
         } else if (head == "delete") {
             //delete [User-ID]
+            if (user.Privilege() < 7) throw Error();
             if (tok.Num() != 2) throw Error();
             user.Delete(next);
         } else if (head == "show") {
@@ -194,7 +197,7 @@ public:
             int index = user.Selectbook();//选中书再储存文件的地址
             if (index == -1) throw Error();
             books.import(index, std::stoi(next));
-            trade t(0-std::stod(price));
+            trade t(0 - std::stod(price));
             diary.add(t);
         } else if (head == "report") {
             if (tok.Num() != 2)throw Error();

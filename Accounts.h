@@ -116,8 +116,8 @@ private:
     unordered_map<string, bool> id_login;
 public:
     int Privilege() {
-        if (all_login_user.empty()) throw Error();
-        return all_login_user.rbegin()->Privilege();
+        if (all_login_user.empty()) return 0;
+        else return all_login_user.rbegin()->Privilege();
     }
 
     int Selectbook() {
@@ -169,9 +169,14 @@ public:
     }
 
     void logout() {
-        if (all_login_user.empty()) throw Error();
-        id_login[Id()] = false;
-        all_login_user.pop_back();
+        if (Privilege() < 1)
+            throw Error();
+        if (all_login_user.empty())
+            throw Error();
+        else {
+            id_login[Id()] = false;
+            all_login_user.pop_back();
+        }
     }
 
     void Register(const string &id, const string &password, const string &username) {
