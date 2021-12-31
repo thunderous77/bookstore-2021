@@ -131,7 +131,7 @@ template<class T>
 class Memory {
 private:
     std::string file_name;
-    std::fstream file;
+    std::fstream file, dlt_file;
     std::vector<int> dlt;
 public:
     int sum = 0;
@@ -148,16 +148,31 @@ public:
     void initialise(std::string name = "") {
         if (name != "") file_name = name;
         file.open(file_name);
+        dlt_file.open(file_name + "_dlt");
         if (!file) {
             file.open(file_name, std::ios::out);
             file.seekp(0, std::ios::beg);
             file.write(reinterpret_cast<char *>(&sum), sizeof(int));
-            file.close();
         } else {
             file.seekg(0, std::ios::beg);
             file.read(reinterpret_cast<char *>(&sum), sizeof(int));
-            file.close();
         }
+        if (!dlt_file) {
+            dlt_file.open(file_name + "_dlt", std::ios::out);
+            dlt_file.seekp(0, std::ios::beg);
+            int tmp = 0;
+            dlt_file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+        } else {
+            int num, tmp;
+            dlt_file.seekg(0, std::ios::beg);
+            dlt_file.read(reinterpret_cast<char *>(&num), sizeof(int));
+            for (int iter = 1; iter <= num; ++iter) {
+                dlt_file.read(reinterpret_cast<char *>(&tmp), sizeof(int));
+                dlt.push_back(tmp);
+            }
+        }
+        dlt_file.close();
+        file.close();
     }
 
     void pushdlt(int pos) {
@@ -167,6 +182,13 @@ public:
         file.write(reinterpret_cast<char *>(&sum), sizeof(int));
         file.close();
         dlt.push_back(pos);
+        dlt_file.open(file_name + "_dlt");
+        dlt_file.seekg(0, std::ios::beg);
+        int tmp = dlt.size();
+        dlt_file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+        dlt_file.seekg(dlt.size() * sizeof(int), std::ios::beg);
+        dlt_file.write(reinterpret_cast<char *>(&pos), sizeof(int));
+        dlt_file.close();
     }
 
     void write(int pos, T &t) {
@@ -197,7 +219,7 @@ public:
     }
 
     void read(int pos, T &t) {
-        file.open(file_name, std::ios::in);
+        file.open(file_name);
         file.seekg(pos + sizeof(int));
         file.read(reinterpret_cast<char *>(&t), sizeof(T));
         file.close();
