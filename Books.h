@@ -116,31 +116,26 @@ public:
     }
 
     void modifyisbn(const string &isbn_) {
-        if (strcmp(isbn, isbn_.c_str()) == 0) throw Error();
         memset(isbn, '\0', sizeof(isbn));
         strcpy(isbn, isbn_.c_str());
     }
 
     void modifyname(const string &name_) {
-        if (strcmp(name, name_.c_str()) == 0) throw Error();
         memset(name, '\0', sizeof(name));
         strcpy(name, name_.c_str());
     }
 
     void modifyauthor(const string &author_) {
-        if (strcmp(author, author_.c_str()) == 0) throw Error();
         memset(author, '\0', sizeof(author));
         strcpy(author, author_.c_str());
     }
 
     void modifykeyword(const string &keyword_) {
-        if (strcmp(keyword, keyword_.c_str()) == 0) throw Error();
         memset(keyword, '\0', sizeof(keyword));
         strcpy(keyword, keyword_.c_str());
     }
 
     void modifyprice(const double &price_) {
-        if (price == price_) throw Error();
         price = price_;
     }
 
@@ -241,37 +236,44 @@ public:
         } else return index;
     }
 
-    void modify_isbn(const int &index, const string &content) {
+    bool modify_isbn(const int &index, const string &content) {
         if (isbn_list.search(content) != -1) throw Error();
         book_detail tmp;
         book.read(index, tmp);
+        if (tmp.Isbn() == content) return true;
         isbn_list.dlt(tmp.Isbn(), index);
         tmp.modifyisbn(content);
         isbn_list.insert(content, index);
         book.write(index, tmp);
+        return false;
     }
 
-    void modify_name(const int &index, const string &content) {
+    bool modify_name(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
+        if (tmp.Name() == content) return true;
         name_list.dlt(tmp.Name(), tmp.Isbn(), index);
         tmp.modifyname(content);
         name_list.insert(content, tmp.Isbn(), index);
         book.write(index, tmp);
+        return false;
     }
 
-    void modify_author(const int &index, const string &content) {
+    bool modify_author(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
+        if (tmp.Author() == content) return true;
         author_list.dlt(tmp.Author(), tmp.Isbn(), index);
         tmp.modifyauthor(content);
         author_list.insert(content, tmp.Isbn(), index);
         book.write(index, tmp);
+        return false;
     }
 
-    void modify_keyword(const int &index, const string &content) {
+    bool modify_keyword(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
+        if (tmp.Keyword() == content) return true;
         int pos = 0;
         string key;
         for (int iter = 0; iter < tmp.Keyword().length(); ++iter) {
@@ -295,13 +297,16 @@ public:
         key = content.substr(pos);
         keyword_list.insert(key, tmp.Isbn(), index);
         book.write(index, tmp);
+        return false;
     }
 
-    void modify_price(const int &index, const string &content) {
+    bool modify_price(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
+        if (tmp.Price() == std::stod(content)) return true;
         tmp.modifyprice(std::stod(content));
         book.write(index, tmp);
+        return false;
     }
 
     void import(const int &index, const int &quantity) {
