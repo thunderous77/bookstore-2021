@@ -113,7 +113,7 @@ private:
     blocklist id_list;
     Memory<Accounts> user;
     vector<loginuser> all_login_user;
-    unordered_map<string, bool> id_login;
+    unordered_map<string, int> id_login;
 public:
     int Privilege() {
         if (all_login_user.empty()) return 0;
@@ -153,7 +153,7 @@ public:
         }
         loginuser l(tmp);
         all_login_user.push_back(l);
-        id_login[id] = true;
+        id_login[id]++;
     }
 
     void su(const string &id) {
@@ -165,7 +165,7 @@ public:
             throw Error();
         loginuser l(tmp);
         all_login_user.push_back(l);
-        id_login[id] = true;
+        id_login[id]++;
     }
 
     void logout() {
@@ -174,7 +174,7 @@ public:
         if (all_login_user.empty())
             throw Error();
         else {
-            id_login[Id()] = false;
+            id_login[Id()]--;
             all_login_user.pop_back();
         }
     }
@@ -223,7 +223,7 @@ public:
 
     void Delete(const string &id) {
         int index = id_list.search((id));
-        if (index == -1 || id_login[id]) throw Error();
+        if (index == -1 || id_login[id]>0) throw Error();
         user.pushdlt(index);
         id_list.dlt(id, index);
     }
