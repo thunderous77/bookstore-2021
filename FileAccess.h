@@ -190,7 +190,7 @@ public:
             dlt.pop_back();
             return ans;
         }
-        file.seekp(0, std::ios::end);
+        file.seekp((sum - 1) * sizeof(T) + sizeof(int), std::ios::beg);
         file.write(reinterpret_cast<char *>(&t), sizeof(T));
         file.close();
         return (sum - 1) * sizeof(T);
