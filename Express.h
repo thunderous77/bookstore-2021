@@ -175,21 +175,19 @@ public:
                 }
             }
             //再modify
-            bool flag = false;
             for (auto iter: unique) {
                 if (iter == "ISBN") {
-                    flag = books.modify_isbn(index, command[iter]) || flag;
+                    books.modify_isbn(index, command[iter]);
                 } else if (iter == "name") {
-                    flag = books.modify_name(index, command[iter]) || flag;
+                    books.modify_name(index, command[iter]);
                 } else if (iter == "author") {
-                    flag = books.modify_author(index, command[iter]) || flag;
+                    books.modify_author(index, command[iter]);
                 } else if (iter == "keyword") {
-                    flag = books.modify_keyword(index, command[iter]) || flag;
+                    books.modify_keyword(index, command[iter]);
                 } else if (iter == "price") {
-                    flag = books.modify_price(index, command[iter]) || flag;
+                    books.modify_price(index, command[iter]);
                 }
             }
-            if (flag) throw Error();
         } else if (head == "import") {
             //import [Quantity] [Total-Cost]
             if (user.Privilege() < 3) throw Error();

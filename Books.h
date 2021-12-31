@@ -6,6 +6,7 @@
 #define INC_1075_BOOKS_H
 
 #include <ostream>
+#include <set>
 #include "FileAccess.h"
 #include "Accounts.h"
 #include "Error.h"
@@ -236,44 +237,37 @@ public:
         } else return index;
     }
 
-    bool modify_isbn(const int &index, const string &content) {
+    void modify_isbn(const int &index, const string &content) {
         if (isbn_list.search(content) != -1) throw Error();
         book_detail tmp;
         book.read(index, tmp);
-        if (tmp.Isbn() == content) return true;
         isbn_list.dlt(tmp.Isbn(), index);
         tmp.modifyisbn(content);
         isbn_list.insert(content, index);
         book.write(index, tmp);
-        return false;
     }
 
-    bool modify_name(const int &index, const string &content) {
+    void modify_name(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
-        if (tmp.Name() == content) return true;
         name_list.dlt(tmp.Name(), tmp.Isbn(), index);
         tmp.modifyname(content);
         name_list.insert(content, tmp.Isbn(), index);
         book.write(index, tmp);
-        return false;
     }
 
-    bool modify_author(const int &index, const string &content) {
+    void modify_author(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
-        if (tmp.Author() == content) return true;
         author_list.dlt(tmp.Author(), tmp.Isbn(), index);
         tmp.modifyauthor(content);
         author_list.insert(content, tmp.Isbn(), index);
         book.write(index, tmp);
-        return false;
     }
 
-    bool modify_keyword(const int &index, const string &content) {
+    void modify_keyword(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
-        if (tmp.Keyword() == content) return true;
         int pos = 0;
         string key;
         for (int iter = 0; iter < tmp.Keyword().length(); ++iter) {
@@ -287,26 +281,27 @@ public:
         keyword_list.dlt(key, tmp.Isbn(), index);
         tmp.modifykeyword(content);
         pos = 0;
+        set <string> sign;
         for (int iter = 0; iter < content.length(); ++iter) {
             if (tmp.Keyword()[iter] == '|') {
                 key = content.substr(pos, iter - pos);
+                if (sign.find(key) != sign.end()) throw Error();
+                else sign.insert(key);
                 keyword_list.insert(key, tmp.Isbn(), index);
                 pos = iter + 1;
             }
         }
         key = content.substr(pos);
+        if (sign.find(key) != sign.end()) throw Error();
         keyword_list.insert(key, tmp.Isbn(), index);
         book.write(index, tmp);
-        return false;
     }
 
-    bool modify_price(const int &index, const string &content) {
+    void modify_price(const int &index, const string &content) {
         book_detail tmp;
         book.read(index, tmp);
-        if (tmp.Price() == std::stod(content)) return true;
         tmp.modifyprice(std::stod(content));
         book.write(index, tmp);
-        return false;
     }
 
     void import(const int &index, const int &quantity) {
