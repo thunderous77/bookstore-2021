@@ -186,7 +186,7 @@ public:
         dlt_file.seekg(0, std::ios::beg);
         int tmp = dlt.size();
         dlt_file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
-        dlt_file.seekg(dlt.size() * sizeof(int), std::ios::beg);
+        dlt_file.seekg(tmp * sizeof(int), std::ios::beg);
         dlt_file.write(reinterpret_cast<char *>(&pos), sizeof(int));
         dlt_file.close();
     }
@@ -210,6 +210,11 @@ public:
             file.write(reinterpret_cast<char *>(&t), sizeof(T));
             file.close();
             dlt.pop_back();
+            dlt_file.open(file_name + "_dlt");
+            dlt_file.seekg(0, std::ios::beg);
+            int tmp = dlt.size();
+            dlt_file.write(reinterpret_cast<char *>(&tmp), sizeof(int));
+            dlt_file.close();
             return ans;
         }
         file.seekp((sum - 1) * sizeof(T) + sizeof(int), std::ios::beg);
