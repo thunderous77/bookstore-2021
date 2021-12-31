@@ -116,26 +116,31 @@ public:
     }
 
     void modifyisbn(const string &isbn_) {
+        if (strcmp(isbn, isbn_.c_str()) == 0) throw Error();
         memset(isbn, '\0', sizeof(isbn));
         strcpy(isbn, isbn_.c_str());
     }
 
     void modifyname(const string &name_) {
+        if (strcmp(name, name_.c_str()) == 0) throw Error();
         memset(name, '\0', sizeof(name));
         strcpy(name, name_.c_str());
     }
 
     void modifyauthor(const string &author_) {
+        if (strcmp(author, author_.c_str()) == 0) throw Error();
         memset(author, '\0', sizeof(author));
         strcpy(author, author_.c_str());
     }
 
     void modifykeyword(const string &keyword_) {
+        if (strcmp(keyword, keyword_.c_str()) == 0) throw Error();
         memset(keyword, '\0', sizeof(keyword));
         strcpy(keyword, keyword_.c_str());
     }
 
     void modifyprice(const double &price_) {
+        if (price == price_) throw Error();
         price = price_;
     }
 
@@ -237,7 +242,7 @@ public:
     }
 
     void modify_isbn(const int &index, const string &content) {
-        if (isbn_list.search(content)!=-1) throw Error();
+        if (isbn_list.search(content) != -1) throw Error();
         book_detail tmp;
         book.read(index, tmp);
         isbn_list.dlt(tmp.Isbn(), index);
